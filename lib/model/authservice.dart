@@ -1,21 +1,32 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:vendoreventlia/view/screens/dashboard/vendordisplay.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<UserCredential> signInWithEmailAndPassword(String email, String password) async {
+  Future<UserCredential> signInWithEmailAndPassword(String email, String password, BuildContext context) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+
+      navigateToVendorDetails(context, userCredential.user!.uid);
       return userCredential;
     } catch (e) {
       print("Error signing in: $e");
       throw e;
     }
+  }
+
+  void navigateToVendorDetails(BuildContext context, String vendorId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => VendorDisplayPage(vendorId: vendorId)),
+    );
   }
 
   Future<void> signOut() async {
@@ -54,4 +65,3 @@ class AuthService {
     }
   }
 }
-

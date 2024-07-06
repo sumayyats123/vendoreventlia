@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:vendoreventlia/repo/repo.dart';
-import 'package:vendoreventlia/screens/loginscreen.dart';
-import 'package:vendoreventlia/widgets/textfield.dart';
+import 'package:vendoreventlia/controller/registercontroller.dart';
+import 'package:vendoreventlia/view/screens/loginscreen.dart';
+import 'package:vendoreventlia/view/widgets/textformfield.dart';
 
 class VendorRegisterScreen extends StatefulWidget {
   const VendorRegisterScreen({Key? key}) : super(key: key);
@@ -17,7 +17,7 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
   final TextEditingController phoneController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-  final AuthService _authService = AuthService();
+  final VendorRegisterController _vendorRegisterController = VendorRegisterController();
 
   @override
   void dispose() {
@@ -26,74 +26,6 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
     nameController.dispose();
     phoneController.dispose();
     super.dispose();
-  }
-
-  void _showSnackbar(BuildContext context, String message) {
-    final snackBar = SnackBar(content: Text(message));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-  Future<void> _registerVendor() async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        await _authService.registerVendor(
-          emailController.text.trim(),
-          passwordController.text.trim(),
-          nameController.text,
-          phoneController.text,
-        );
-
-        emailController.clear();
-        passwordController.clear();
-        nameController.clear();
-        phoneController.clear();
-
-        _showSnackbar(context, 'Vendor registered successfully!');
-
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => VendorLoginScreen()));
-      } catch (e) {
-        _showSnackbar(context, 'Failed to register: ${e.toString()}');
-      }
-    } else {
-      _showSnackbar(context, 'Please correct the errors in the form');
-    }
-  }
-
-  String? _validateEmail(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Please enter an email';
-    } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-      return 'Please enter a valid email';
-    }
-    return null;
-  }
-
-  String? _validatePassword(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Please enter a password';
-    } else if (value.length < 6) {
-      return 'Password must be at least 6 characters';
-    } else if (value.contains(' ')) {
-      return 'Password should not contain spaces';
-    }
-    return null;
-  }
-
-  String? _validateName(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Please enter your company name';
-    }
-    return null;
-  }
-
-  String? _validatePhone(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Please enter your phone number';
-    } else if (value.trim().length != 10) {
-      return 'Please enter a 10-digit valid phone number';
-    }
-    return null;
   }
 
   @override
@@ -131,30 +63,45 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
                       CustomTextFormField(
                         controller: emailController,
                         hintText: 'Enter Email',
-                        validator: _validateEmail,
+                        validator: _vendorRegisterController.validateEmail,
                       ),
                       const SizedBox(height: 20),
                       CustomTextFormField(
                         obscureText: true,
                         controller: passwordController,
                         hintText: 'Enter Password',
-                        validator: _validatePassword,
+                        validator: _vendorRegisterController.validatePassword,
                       ),
                       const SizedBox(height: 20),
                       CustomTextFormField(
                         controller: nameController,
                         hintText: 'Enter Company Name',
-                        validator: _validateName,
+                        validator: _vendorRegisterController.validateName,
                       ),
                       const SizedBox(height: 20),
                       CustomTextFormField(
                         controller: phoneController,
                         hintText: 'Enter Phone Number',
-                        validator: _validatePhone,
+                        validator: _vendorRegisterController.validatePhone,
                       ),
                       const SizedBox(height: 20),
                       InkWell(
-                        onTap: _registerVendor,
+                        onTap: () {
+                          if (_formKey.currentState!.validate()) {
+                            _vendorRegisterController.registerVendor(
+                              emailController.text.trim(),
+                              passwordController.text.trim(),
+                              nameController.text,
+                              phoneController.text,
+                              context,
+                            );
+                          } else {
+                            _vendorRegisterController.showSnackbar(
+                              context,
+                              'Please correct the errors in the form',
+                            );
+                          }
+                        },
                         child: Container(
                           height: 60,
                           width: 200,
@@ -214,3 +161,4 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
     );
   }
 }
+

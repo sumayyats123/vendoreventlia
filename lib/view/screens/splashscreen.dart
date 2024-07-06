@@ -1,5 +1,5 @@
-import 'package:vendoreventlia/screens/loginscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:vendoreventlia/view/screens/loginscreen.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
