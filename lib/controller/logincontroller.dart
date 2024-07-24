@@ -3,51 +3,56 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:vendoreventlia/model/authservice.dart';
 import 'package:vendoreventlia/utilties/utilities.dart';
+import 'package:vendoreventlia/view/screens/dashboard/vendordisplay.dart';
 
 class VendorLoginController {
   final AuthService _authService = AuthService();
 
   Future<void> signInWithEmailAndPassword(String email, String password, BuildContext context) async {
-    showLoadingIndicator(context); // Show loading indicator
-    try {
-      UserCredential userCredential = await _authService.signInWithEmailAndPassword(email, password, context);
+  showLoadingIndicator(context); // Show loading indicator
+  try {
+    UserCredential userCredential = await _authService.signInWithEmailAndPassword(email, password, context);
 
-      if (userCredential.user != null) {
-        String uid = userCredential.user!.uid;
+    if (userCredential.user != null) {
+      String uid = userCredential.user!.uid;
 
-        DocumentSnapshot vendorDoc = await FirebaseFirestore.instance.collection('vendor').doc(uid).get();
+      // Debugging: Check if UID is correct
+      print('User ID: $uid');
 
-        if (vendorDoc.exists) {
-          var data = vendorDoc.data() as Map<String, dynamic>;
+      DocumentSnapshot vendorDoc = await FirebaseFirestore.instance.collection('vendor').doc(uid).get();
 
-          if (data['isvendor'] == true) {
-            if (data['isBlocked'] == true) {
-              showSnackbar(context, 'Your account has been blocked by the admin.');
-              return;
-            }
+      if (vendorDoc.exists) {
+        var data = vendorDoc.data() as Map<String, dynamic>;
 
-            if (data['isDetailsAdded'] == true) {
-              Navigator.of(context).pushReplacementNamed('/vendorDashboard');
-            } else {
-              Navigator.of(context).pushReplacementNamed('/vendorDetails');
-            }
+        if (data['isvendor'] == true) {
+          if (data['isBlocked'] == true) {
+            showSnackbar(context, 'Your account has been blocked by the admin.');
+            return;
+          }
+
+          if (data['isDetailsAdded'] == true) {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => VendorDisplayPage(vendorId: uid)));
           } else {
-            showSnackbar(context, 'You do not have vendor access.');
+            Navigator.of(context).pushReplacementNamed('/vendorDetails');
           }
         } else {
-          showSnackbar(context, 'Vendor document does not exist.');
+          showSnackbar(context, 'You do not have vendor access.');
         }
       } else {
-        showSnackbar(context, 'Failed to sign in: User not found.');
+        showSnackbar(context, 'Vendor document does not exist.');
       }
-    } on FirebaseAuthException catch (e) {
-      _handleFirebaseAuthException(e, context);
-    } catch (e) {
-      showSnackbar(context, 'An unexpected error occurred.');
-    } finally {
-      hideLoadingIndicator(context); // Hide loading indicator
+    } else {
+      showSnackbar(context, 'Failed to sign in: User not found.');
     }
+  } on FirebaseAuthException catch (e) {
+    _handleFirebaseAuthException(e, context);
+  } catch (e) {
+    showSnackbar(context, 'An unexpected error occurred.');
+  } finally {
+    hideLoadingIndicator(context); // Hide loading indicator
   }
+}
+
 
   void _handleFirebaseAuthException(FirebaseAuthException e, BuildContext context) {
     String errorMessage;

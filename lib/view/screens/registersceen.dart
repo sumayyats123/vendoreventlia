@@ -136,7 +136,7 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
                           TextButton(
                             onPressed: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const VendorLoginScreen(),
+                                builder: (context) =>  VendorLoginScreen(),
                               ));
                             },
                             child: const Text(
@@ -161,4 +161,3 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
     );
   }
 }
-

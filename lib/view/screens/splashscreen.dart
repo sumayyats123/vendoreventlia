@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vendoreventlia/utilties/constant.dart';
 import 'package:vendoreventlia/view/screens/loginscreen.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -17,13 +18,13 @@ class SplashScreen extends StatelessWidget {
              GestureDetector(
                onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) =>  VendorLoginScreen()),
+                  MaterialPageRoute(builder: (context) =>   VendorLoginScreen()),
                 );
               },
                child: const Text(
                 "Vendor Panel",
                 style: TextStyle(
-                  color: Colors.white,
+                  color: kwhite,
                   fontSize: 24, 
                   fontWeight: FontWeight.bold,
                 ),

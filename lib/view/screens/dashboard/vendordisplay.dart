@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:vendoreventlia/model/vendordetailes.dart';
 import 'package:vendoreventlia/view/screens/dashboard/vendorservice.dart';
@@ -10,8 +9,20 @@ class VendorDisplayPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+   
+    if (vendorId.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 6, 3, 60),
+          iconTheme: const IconThemeData(color: Colors.white),
+          title: const Text("Vendor Register"),
+        ),
+        body: Center(child: Text('Invalid Vendor ID')),
+      );
+    }
+
     return Scaffold(
-      appBar:  AppBar(
+      appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 6, 3, 60),
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text("Vendor Register"),
@@ -41,7 +52,7 @@ class VendorDisplayPage extends StatelessWidget {
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 8),
-                  Text('Contact: ${vendor.contact}'),
+                  Text('Contact: ${vendor.phone}'),
                   SizedBox(height: 8),
                   Text('Address: ${vendor.address}'),
                   SizedBox(height: 16),

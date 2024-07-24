@@ -18,7 +18,7 @@ class VendorRegisterController {
       showSnackbar(context, 'Vendor registered successfully!');
 
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const VendorLoginScreen()));
+          MaterialPageRoute(builder: (context) =>  VendorLoginScreen()));
     } catch (e) {
       showSnackbar(context, 'Failed to register: ${e.toString()}');
     }

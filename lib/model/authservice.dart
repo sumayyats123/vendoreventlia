@@ -25,7 +25,7 @@ class AuthService {
   void navigateToVendorDetails(BuildContext context, String vendorId) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => VendorDisplayPage(vendorId: vendorId)),
+      MaterialPageRoute(builder: (context) =>  VendorDisplayPage(vendorId: vendorId,)),
     );
   }
 
@@ -56,7 +56,9 @@ class AuthService {
           'name': name,
           'phone': phone,
           'createdAt': DateTime.now(),
-          'isvendor': true, // additional field indicating vendor status
+          'isvendor': true, 
+          "imageUrl":"",
+          "workImages":[], // Changed to an empty list as it should be
         });
       }
     } catch (e) {

@@ -30,7 +30,7 @@ class VendorDashboardScreen extends StatelessWidget {
                 Navigator.of(context).pop();
                 await FirebaseAuth.instance.signOut();
                 Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const VendorLoginScreen()),
+                  MaterialPageRoute(builder: (context) =>  VendorLoginScreen()),
                   (route) => false,
                 );
               },

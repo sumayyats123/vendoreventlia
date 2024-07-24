@@ -8,7 +8,7 @@ class VendorService {
     try {
       var snapshot = await _db.collection('vendor').doc(vendorId).get();
       if (snapshot.exists) {
-        return VendorDetails.fromFirestore(snapshot.data()!);
+        return VendorDetails.fromFirestore(snapshot);
       } else {
         throw Exception('Vendor not found');
       }
@@ -18,4 +18,3 @@ class VendorService {
     }
   }
 }
-
