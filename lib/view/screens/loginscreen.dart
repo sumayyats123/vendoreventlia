@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vendoreventlia/controller/vendordetailscontroller.dart';
 import 'package:vendoreventlia/model/authservice.dart';
 
 class VendorLoginScreen extends StatefulWidget {

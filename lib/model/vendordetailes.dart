@@ -64,7 +64,7 @@ class VendorDetails {
       phone: data['phone'] ?? '',
       address: data['address'] ?? '',
       imageUrl: data['imageUrl'] ?? '',
-      workImages: List<String>.from(data['workImages'] ?? []),
+      workImages: List<String>.from(data['workImage'] ?? []),  // Ensure correct field name
     );
   }
 }

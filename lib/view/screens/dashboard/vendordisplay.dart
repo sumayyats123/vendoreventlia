@@ -9,7 +9,6 @@ class VendorDisplayPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   
     if (vendorId.isEmpty) {
       return Scaffold(
         appBar: AppBar(
@@ -38,13 +37,25 @@ class VendorDisplayPage extends StatelessWidget {
             return Center(child: Text('Vendor not found'));
           } else {
             VendorDetails vendor = snapshot.data!;
+
+            // Debugging: Print the workImages list to check if it is being fetched correctly
+            print('Work Images: ${vendor.workImages}');
+
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
-                    child: Image.network(vendor.imageUrl, height: 200, width: 200, fit: BoxFit.cover),
+                    child: Image.network(
+                      vendor.imageUrl,
+                      height: 200,
+                      width: 200,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Center(child: Text('Error loading image'));
+                      },
+                    ),
                   ),
                   SizedBox(height: 16),
                   Text(
@@ -56,24 +67,31 @@ class VendorDisplayPage extends StatelessWidget {
                   SizedBox(height: 8),
                   Text('Address: ${vendor.address}'),
                   SizedBox(height: 16),
-                  Text(
-                    'Work Images',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
+                  Text('Work Images:', style: Theme.of(context).textTheme.headline6),
                   SizedBox(height: 8),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 8,
-                      crossAxisSpacing: 8,
-                    ),
-                    itemCount: vendor.workImages.length,
-                    itemBuilder: (context, index) {
-                      return Image.network(vendor.workImages[index], fit: BoxFit.cover);
-                    },
-                  ),
+
+                  // Add check for empty workImages list
+                  vendor.workImages.isEmpty
+                      ? Text('No work images available')
+                      : GridView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 8,
+                            crossAxisSpacing: 8,
+                          ),
+                          itemCount: vendor.workImages.length,
+                          itemBuilder: (context, index) {
+                            return Image.network(
+                              vendor.workImages[index],
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Center(child: Text('Error loading image'));
+                              },
+                            );
+                          },
+                        ),
                 ],
               ),
             );
@@ -83,3 +101,4 @@ class VendorDisplayPage extends StatelessWidget {
     );
   }
 }
+
