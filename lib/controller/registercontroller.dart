@@ -15,17 +15,20 @@ class VendorRegisterController {
     try {
       await _authService.registerVendor(email, password, name, phone);
 
-      showSnackbar(context, 'Vendor registered successfully!');
+      showSnackbar(context, 'Vendor registered successfully!', Colors.green);
 
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) =>  VendorLoginScreen()));
+          MaterialPageRoute(builder: (context) => VendorLoginScreen()));
     } catch (e) {
-      showSnackbar(context, 'Failed to register: ${e.toString()}');
+      showSnackbar(context, 'Failed to register: ${e.toString()}', Colors.red);
     }
   }
 
-  void showSnackbar(BuildContext context, String message) {
-    final snackBar = SnackBar(content: Text(message));
+  void showSnackbar(BuildContext context, String message, Color backgroundColor) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      backgroundColor: backgroundColor,
+    );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 

@@ -14,7 +14,7 @@ class VendorService {
       }
     } catch (e) {
       print("Failed to fetch vendor details: $e");
-      throw Exception('Failed to fetch vendor details: $e');
+       throw Exception('Failed to fetch vendor details: $e');
     }
   }
 }

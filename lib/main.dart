@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:vendoreventlia/view/screens/splashscreen.dart';
+import 'package:vendoreventlia/view/widgets/themeconfi.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,9 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
      home: SplashScreen(),
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: const Color.fromARGB(255, 6, 3, 60),
-      ),
+    theme: ThemeConfig.darkTheme,
     );
   }
 }

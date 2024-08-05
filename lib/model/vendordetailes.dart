@@ -43,6 +43,7 @@ class VendorDetails {
   final String phone;
   final String address;
   final String imageUrl;
+  final String profilePictureUrl;
   final List<String> workImages;
 
   VendorDetails({
@@ -53,6 +54,7 @@ class VendorDetails {
     required this.address,
     required this.imageUrl,
     required this.workImages,
+    required this.profilePictureUrl
   });
 
   factory VendorDetails.fromFirestore(DocumentSnapshot doc) {
@@ -64,7 +66,9 @@ class VendorDetails {
       phone: data['phone'] ?? '',
       address: data['address'] ?? '',
       imageUrl: data['imageUrl'] ?? '',
-      workImages: List<String>.from(data['workImage'] ?? []),  // Ensure correct field name
+      workImages: List<String>.from(data['workImage'] ?? []),  
+      profilePictureUrl: data['profilePictureUrl'] ?? '',
+      // Ensure correct field name
     );
   }
 }

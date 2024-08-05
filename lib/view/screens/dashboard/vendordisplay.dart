@@ -1,45 +1,96 @@
 import 'package:flutter/material.dart';
 import 'package:vendoreventlia/model/vendordetailes.dart';
+import 'package:vendoreventlia/view/screens/bookinservice/booingmanagement.dart';
+import 'package:vendoreventlia/view/screens/dashboard/edit.dart';
 import 'package:vendoreventlia/view/screens/dashboard/vendorservice.dart';
 
-class VendorDisplayPage extends StatelessWidget {
+class VendorDisplayPage extends StatefulWidget {
   final String vendorId;
 
   const VendorDisplayPage({Key? key, required this.vendorId}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    if (vendorId.isEmpty) {
-      return Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 6, 3, 60),
-          iconTheme: const IconThemeData(color: Colors.white),
-          title: const Text("Vendor Register"),
+  _VendorDisplayPageState createState() => _VendorDisplayPageState();
+}
+
+class _VendorDisplayPageState extends State<VendorDisplayPage> {
+  late Future<VendorDetails> _vendorDetails;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchVendorDetails();
+  }
+
+  void _fetchVendorDetails() {
+    setState(() {
+      _vendorDetails = VendorService().getVendorDetails(widget.vendorId);
+    });
+  }
+
+  void _onDropdownMenuItemSelected(String value) {
+    switch (value) {
+      case 'Change Profile':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EditProfileScreen(vendorId: widget.vendorId),
+          ),
+        ).then((updatedName) {
+          if (updatedName != null) {
+            setState(() {
+              _fetchVendorDetails();
+            });
+          }
+        });
+        break;
+        case 'Booking Management':
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BookingManagementScreen(vendorId: widget.vendorId),
         ),
-        body: Center(child: Text('Invalid Vendor ID')),
       );
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 6, 3, 60),
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text("Vendor Register"),
+        title: const Text('Profile'),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: _onDropdownMenuItemSelected,
+            itemBuilder: (BuildContext context) {
+              return [
+                'Change Profile',
+                'Services',
+                'Booking Management',
+                'Notification',
+                'Pricing',
+                'Settings',
+              ].map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<VendorDetails>(
-        future: VendorService().getVendorDetails(vendorId),
+        future: _vendorDetails,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData) {
-            return Center(child: Text('Vendor not found'));
+            return const Center(child: Text('Vendor not found'));
           } else {
             VendorDetails vendor = snapshot.data!;
-
-            // Debugging: Print the workImages list to check if it is being fetched correctly
-            print('Work Images: ${vendor.workImages}');
 
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16),
@@ -47,36 +98,82 @@ class VendorDisplayPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
-                    child: Image.network(
-                      vendor.imageUrl,
+                    child: Container(
+                      width: double.infinity,
                       height: 200,
-                      width: 200,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Center(child: Text('Error loading image'));
-                      },
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.grey[200],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          vendor.imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Center(child: Text('Error loading image'));
+                          },
+                        ),
+                      ),
                     ),
                   ),
-                  SizedBox(height: 16),
-                  Text(
-                    vendor.name,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              vendor.name,
+                              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 8),
+                            const Row(
+                              children: [
+                                Icon(Icons.location_on, size: 24.0, color: Colors.grey),
+                                SizedBox(width: 8.0),
+                                Text(
+                                  'Location'  ,
+                                  style: TextStyle(
+                          
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Text('Contact: ${vendor.phone}'),
+                            const SizedBox(height: 16),
+                         
+                          ],
+                        ),
+                      ),
+                      ElevatedButton( 
+                        onPressed: () {
+                          // Implement chat functionality here
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.green,
+                          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text(
+                          'Chat with User',
+                          style: TextStyle(fontSize: 15, color: Colors.white),
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 8),
-                  Text('Contact: ${vendor.phone}'),
-                  SizedBox(height: 8),
-                  Text('Address: ${vendor.address}'),
-                  SizedBox(height: 16),
-                  Text('Work Images:', style: Theme.of(context).textTheme.headline6),
-                  SizedBox(height: 8),
-
-                  // Add check for empty workImages list
+                  const SizedBox(height: 16),
                   vendor.workImages.isEmpty
-                      ? Text('No work images available')
+                      ? const Text('No work images available')
                       : GridView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                             mainAxisSpacing: 8,
                             crossAxisSpacing: 8,
@@ -87,7 +184,7 @@ class VendorDisplayPage extends StatelessWidget {
                               vendor.workImages[index],
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
-                                return Center(child: Text('Error loading image'));
+                                return const Center(child: Text('Error loading image'));
                               },
                             );
                           },
@@ -101,4 +198,3 @@ class VendorDisplayPage extends StatelessWidget {
     );
   }
 }
-
