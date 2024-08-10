@@ -37,35 +37,37 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
   }
 
   Future<void> _handleSignIn() async {
-    setState(() {
-      _autoValidate = true;
-    });
+    if (!_formKey.currentState!.validate()) {
+      setState(() {
+        _autoValidate = true;
+      });
+      return;
+    }
 
-    if (_formKey.currentState?.validate() ?? false) {
-      _toggleLoading(true);
+    _toggleLoading(true);
 
-      try {
-        bool success = await _authService.signInWithEmailAndPassword(
-          emailController.text.trim(),
-          passwordController.text.trim(),
-          context,
-        );
+    try {
+      bool success = await _authService.signInWithEmailAndPassword(
+        emailController.text.trim(),
+        passwordController.text.trim(),
+        context,
+      );
 
-        if (success) {
-          _showSnackbar('Login successful!', Colors.green);
-          emailController.clear();
-          passwordController.clear();
-          setState(() {
-            _autoValidate = false;
-          });
-        } else {
-          _showSnackbar('Invalid email or password. Please try again.', Colors.red);
-        }
-      } catch (error) {
-        _showSnackbar('An unexpected error occurred: $error', Colors.red);
-      } finally {
-        _toggleLoading(false);
+      if (success) {
+        _showSnackbar('Login successful!', Colors.green);
+        emailController.clear();
+        passwordController.clear();
+        setState(() {
+          _autoValidate = false;
+        });
+        // Navigate to the next screen here (e.g., Vendor Dashboard)
+      } else {
+        _showSnackbar('Invalid email or password. Please try again.', Colors.red);
       }
+    } catch (error) {
+      _showSnackbar('An unexpected error occurred: $error', Colors.red);
+    } finally {
+      _toggleLoading(false);
     }
   }
 
@@ -138,7 +140,8 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
                         _obscurePassword = !_obscurePassword;
                       });
                     },
-                  ), keyboardType: TextInputType.number,
+                  ),
+                  keyboardType: TextInputType.number,
                 ),
                 const SizedBox(height: 20),
                 _isLoading

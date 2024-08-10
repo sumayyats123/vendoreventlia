@@ -3,6 +3,7 @@ import 'package:vendoreventlia/model/vendordetailes.dart';
 import 'package:vendoreventlia/view/screens/bookinservice/booingmanagement.dart';
 import 'package:vendoreventlia/view/screens/dashboard/edit.dart';
 import 'package:vendoreventlia/view/screens/dashboard/vendorservice.dart';
+import 'package:vendoreventlia/view/screens/services/catogoryscreen.dart';
 
 class VendorDisplayPage extends StatefulWidget {
   final String vendorId;
@@ -44,13 +45,22 @@ class _VendorDisplayPageState extends State<VendorDisplayPage> {
           }
         });
         break;
-        case 'Booking Management':
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BookingManagementScreen(vendorId: widget.vendorId),
-        ),
-      );
+      case 'Services':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VendorCategoriesScreen(vendorId: widget.vendorId), // Navigate to VendorCategoriesScreen
+          ),
+        );
+        break;
+      case 'Booking Management':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BookingManagementScreen(vendorId: widget.vendorId),
+          ),
+        );
+        break;
     }
   }
 
@@ -134,9 +144,8 @@ class _VendorDisplayPageState extends State<VendorDisplayPage> {
                                 Icon(Icons.location_on, size: 24.0, color: Colors.grey),
                                 SizedBox(width: 8.0),
                                 Text(
-                                  'Location'  ,
+                                  'Location',
                                   style: TextStyle(
-                          
                                     fontSize: 18.0,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -145,11 +154,10 @@ class _VendorDisplayPageState extends State<VendorDisplayPage> {
                             ),
                             Text('Contact: ${vendor.phone}'),
                             const SizedBox(height: 16),
-                         
                           ],
                         ),
                       ),
-                      ElevatedButton( 
+                      ElevatedButton(
                         onPressed: () {
                           // Implement chat functionality here
                         },
